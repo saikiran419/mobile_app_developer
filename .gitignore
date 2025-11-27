@@ -2,6 +2,14 @@ node_modules/
 .expo/
 .expo-shared/
 dist/
+android/
+ios/
+*.log
+package-lock.json
+node_modules/
+.expo/
+.expo-shared/
+dist/
 ios/
 android/
 *.log

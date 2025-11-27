@@ -1,130 +1,130 @@
-# Assignment App — README
 
-This repository contains a starter React Native app scaffold created with Expo. It implements a minimal navigation flow and small example screens so you can focus on completing the internship assignment quickly.
+# Assignment App — Expo Mobile App Scaffold
 
-This README explains how to set up, run, and troubleshoot the project, what is implemented, and next steps you can follow to finish the assignment.
+This repository is a ready-to-extend Expo React Native app for your assignment. It includes:
 
-**Prerequisites**
-- macOS with `zsh` (you are already on macOS)
-- Node.js (use `nvm` to manage versions recommended)
-- Homebrew (for installing `watchman`)
-- Xcode (for iOS simulator) and/or Android Studio (for Android emulator)
+- Expo-managed React Native app (SDK 49)
+- Simple authentication flow with token persistence
+- Mock JSON API using `json-server` (via Express helper)
+- Starter screens and components for rapid development
 
-**Quick start**
-1. Open a terminal and change into the project folder:
+## Project Overview
+
+Minimal setup for quick implementation of assignment features. The app runs locally with a mock API and includes basic tests.
+
+## Getting Started
+
+### 1. Install dependencies
 
 ```bash
 cd "/Users/v.saikiranreddy/Desktop/mobile_app developer"
-```
-
-2. Clean install dependencies:
-
-```bash
-# remove any previous install artifacts
-rm -rf node_modules package-lock.json
+rm -rf node_modules package-lock.json # optional cleanup
 npm install
 ```
 
-3. Make Expo install the exact native-compatible packages for the SDK:
+### 2. Install Expo-compatible native packages
 
 ```bash
 npx expo install
+npx expo install --fix # if you see compatibility warnings
 ```
 
-4. Start the development server (Metro / Expo):
+### 3. Start the mock API server (in a new terminal)
+
+```bash
+npm run mock-server
+```
+
+### 4. Start the Expo development server
 
 ```bash
 npm run start
-# then press 'i' to open iOS simulator, 'a' for Android, or use the explicit scripts:
-npm run ios
-npm run android
 ```
 
-If Metro logs package compatibility warnings, run `npx expo install --fix` which will align packages to the Expo SDK in `app.json`.
+When prompted:
+- Press `a` for Android emulator
+- Press `i` for iOS simulator
+- Scan the QR code with Expo Go (Android) or Camera app (iOS)
+- Press `w` for web browser
 
-**Troubleshooting (common issues you saw)**
-- Dependency mismatches with Expo SDK: run:
+> **Note:** If testing on a physical device, update the API base URL in `src/services/api.js` from `localhost` to your computer's IP address, or use Expo's tunnel mode.
+
+## Key Files
+
+- `App.js` — app entry and navigation
+- `src/context/AuthContext.js` — authentication state and logic
+- `src/services/api.js` — Axios client for mock API
+- `scripts/mock-server.js` & `db.json` — mock API and seed data
+- `src/screens/` — all main screens (Login, Signup, Dashboard, Items, Details, Profile, Debug)
+
+## Mock API & Web UI
+
+The mock API uses `json-server` and exposes a browser UI for inspecting resources and endpoints.
+
+- Default URL: `http://localhost:3001`
+- Open in browser: `http://localhost:3001` (see `/users` and `/items`)
+
+Example curl commands (replace `localhost` with your computer's IP if testing from a device):
 
 ```bash
-npx expo install --fix
+# List items
+curl http://localhost:3001/items
+# Get a single item
+curl http://localhost:3001/items/1
+# Create an item
+curl -X POST http://localhost:3001/items -H "Content-Type: application/json" -d '{"title":"New item","description":"Created via curl"}'
 ```
 
-- Metro errors: "EMFILE: too many open files, watch" — resolve by installing/using Watchman and increasing file descriptor limits:
+**Important:** Start the mock server before running the app so the mobile client can fetch data.
+
+## Testing
+
+Run unit tests:
 
 ```bash
-# install watchman (Homebrew required)
-brew install watchman
-# clear any existing watchman state
-watchman watch-del-all
-# temporarily increase open-file limit for current terminal
-ulimit -n 8192
-# (optional) make system-wide change until reboot (requires sudo)
-sudo launchctl limit maxfiles 524288 524288
+npm test
 ```
 
-After applying the above, run `npm run start` again.
+## Troubleshooting
 
-**What’s included (implemented so far)**
-- `App.js` — application entry point and navigation container
-- `src/screens/HomeScreen.js` — Home screen with navigation buttons
-- `src/screens/DetailsScreen.js` — Details screen (receives params)
-- `src/screens/LoginScreen.js` — Simple mock login UI and flow
-- `src/components/Header.js` — Small header component used by screens
-- `app.json`, `package.json`, `babel.config.js` — project config
+- **Expo/Metro watcher errors (macOS):**
+	- "EMFILE: too many open files"
+	- Install Watchman: `brew install watchman`
+	- Reset watches: `watchman watch-del-all`
+	- Increase file limit: `ulimit -n 8192`
+	- For persistent change: `sudo launchctl limit maxfiles 524288 524288`
 
-This scaffold is intentionally minimal so you can implement assignment features quickly.
+- **Expo package compatibility warnings:**
+	- Run: `npx expo install --fix`
 
-**Project structure**
+- **API connection issues on device:**
+	- Change API base URL in `src/services/api.js` to your computer's IP address
+	- Make sure your phone and computer are on the same Wi-Fi network
 
-```
-/ (project root)
-├─ App.js
-├─ app.json
-├─ package.json
-├─ src/
-│  ├─ components/
-│  │  └─ Header.js
-	│  └─ ...
-│  └─ screens/
-│     ├─ HomeScreen.js
-│     ├─ DetailsScreen.js
-│     └─ LoginScreen.js
-```
+## Build & Release
 
-**Recommended next steps to complete the assignment**
-1. Implement assignment-specific screens and UI: create the screens listed in your assignment PDF inside `src/screens`.
-2. Data layer: add `src/services/api.js` using `axios` and decide whether to use real back-end APIs or a local mock (e.g., `json-server`).
-3. State management: use React Context or Redux Toolkit depending on complexity. Persist auth tokens or cached data with `@react-native-async-storage/async-storage`.
-4. Authentication: replace the mock login with real API calls and guard protected screens.
-5. Testing: add unit tests with Jest and optional E2E with Detox or Expo E2E.
-6. Build artifacts: use EAS to create production builds or use Expo Application Services.
-
-**Build / Release (Expo + EAS)**
-Install EAS CLI and follow Expo docs to build production apps:
+Use EAS for production builds:
 
 ```bash
-# install eas-cli
-npm install -g eas-cli
-# login and configure
+npm install -g eas-cli # install EAS CLI
 eas login
-# create an iOS or Android build
 eas build --platform ios
 eas build --platform android
 ```
 
-**Deliverables checklist (for submission)**
-- Source code repository (this project) with clear commits
-- `README.md` with setup and run steps (this file)
-- Working app screenshots (iOS + Android) and a short demo video (30–120s)
-- Build artifact (APK / AAB or Expo/EAS build links)
-- Notes: features implemented, any deviations from spec, known issues
+## Deliverables Checklist
 
-**Notes & support**
-- If you want I can continue and implement the assignment features (UI, mock API, auth flow, persistence, tests). Reply: "Continue — implement features".
-- If you prefer a full written assignment document instead of code, reply: "Document only".
+- Source repository with commits
+- Updated `README.md` with run instructions
+- Screenshots (iOS & Android) and short demo video (30–120s)
+- Build artifact / EAS build links
+- Notes describing implemented features and any deviations from the spec
 
-**Contact / next step**
-Tell me which option you want next:
-- `Continue — implement features` — I will implement the assignment code (mock API, state, auth, persistence, tests).
-- `Document only` — I will write the assignment submission document and architecture explanations.
+## Next Steps
+
+- Continue — implement features: polish UI, finish all screens, connect APIs, add caching/offline, expand tests, produce build artifacts
+- Document only: write submission and architecture rationale
+
+---
+File: `README.md` — updated
 

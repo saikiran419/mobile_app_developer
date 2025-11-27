@@ -1,36 +1,36 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import Header from '../components/Header';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { signIn } = useAuth();
 
-  function onLogin() {
-    // simple mock login behaviour
-    if (!email || !password) {
-      Alert.alert('Error', 'Please enter email and password');
-      return;
+  async function onLogin() {
+    try {
+      await signIn({ email, password });
+    } catch (e) {
+      Alert.alert('Login failed', e?.response?.data?.message || e.message);
     }
-    Alert.alert('Logged in', `Welcome ${email}`);
-    navigation.navigate('Home');
   }
 
   return (
     <View style={styles.container}>
-      <Header title="Login" />
+      {/* <Header title="Login" /> */}
       <Text style={styles.label}>Email</Text>
-      <TextInput value={email} onChangeText={setEmail} style={styles.input} placeholder="you@example.com" />
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
       <Text style={styles.label}>Password</Text>
-      <TextInput secureTextEntry value={password} onChangeText={setPassword} style={styles.input} placeholder="password" />
+      <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
       <View style={{ height: 12 }} />
       <Button title="Login" onPress={onLogin} />
+      <Button title="Sign up" onPress={() => navigation.navigate('Signup')} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
+  container: { flex: 1, padding: 16, justifyContent: 'center' },
   label: { marginTop: 12, marginBottom: 4 },
   input: { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 6 }
 });

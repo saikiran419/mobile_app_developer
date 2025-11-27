@@ -1,0 +1,9 @@
+{
+  "users": [
+    { "id": 1, "email": "test@example.com", "password": "password", "name": "Test User" }
+  ],
+  "items": [
+    { "id": 1, "title": "Item One", "subtitle": "Short description 1", "details": "Detailed info about item one." },
+    { "id": 2, "title": "Item Two", "subtitle": "Short description 2", "details": "Detailed info about item two." }
+  ]
+}
